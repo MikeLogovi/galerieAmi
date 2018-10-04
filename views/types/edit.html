@@ -1,0 +1,47 @@
+{% extends 'layout.html'%}
+{%block styling%}
+  {%if ami._id%}
+  ../../../bootstrap/css/bootstrap.min.css
+  {%else%}
+  ../../bootstrap/css/bootstrap.min.css
+  {%%endif}
+{%endblock%}
+{%block title%}
+  {{title}}
+{%endblock%}
+{%block body%}
+  {%if errors %}
+    <div class='alert alert-danger alert-dismiss fade show' role='alert'>
+        {%for error in errors%}
+           {{error}}
+        {% endfor %}
+        <button type='button' class='close' data-dismiss='alert' aria-label='close'>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+  {%endif%}
+   <form method='post' action='{{endpoint}}' enctype='multipart/form-data'>
+        <div class='form-group'>
+             <label for='name'>Nom</label>
+             <input type='text' id='name' value="{{body.name or type.name}}" name='name' class='form-control'/>
+        </div>
+        <div class='form-group'>
+                <label for='color'>Couleur</label>
+                <input type='color'  id='put' />
+                <input type='hidden' name='color' id='get' value="{{body.color or type.color}}"/>
+        </div>
+        <div class='form-group'>
+                <label for='description'>Description</label>
+                <textarea name='description' id='description'>{{body.description or type.description}}</textarea>
+        </div>
+        <div class='form-group'>
+                <label for='file'>Image</label>
+                <input type='file' name='file' id='file'/>
+        </div>
+        <button type='submit' class='btn btn-primary'>Envoyer</button>
+   </form>
+{%endblock%}
+<script>
+  var put=document.getElementById('put').value;
+  document.getElementById('get').value=put;
+</script>

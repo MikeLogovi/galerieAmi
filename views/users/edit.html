@@ -1,0 +1,52 @@
+{% extends 'layout.html'%}
+{%block styling%}
+../bootstrap/css/bootstrap.min.css
+{% endblock %}
+{%block title%}
+    {%if user%}
+      Edition de profil
+    {%else}
+      Inscription
+    {%endif%}
+{% endblock %}
+
+{%block  body%}
+  <section class='text-center'>
+      {%if user%}
+       <h3 class='text-primary'>EDITION DE PROFIL</h3>
+      {%else}
+      <h3 class='text-primary'>INSCRIPTION</h3>
+      {%endif%}
+      {% if errors%}
+         <div class='alert alert-danger alert-dismiss fade show'>
+             {%for error in errors%}
+                {{error}}
+             {%endfor%}
+             <button type='close' data-dismiss='alert' role='close'>
+                 <span>&times;</span>
+             </button>
+         </div>
+      {%endif%}
+       <form class='well' method='POST' action='{{endpoint}}' enctype='multipart/form-data'>
+             <div class='form-group'>
+                 <label for='userName'>Nom d'utilisateur</label>
+                 <input type='text' name='userName' id='userName' value="{{body.userName or user.userName }}"/>
+             </div>
+             <div class='form-group'>
+                    <label for='password'>Mot de passe</label>
+                    <input type='password' name='password' id='password' />
+            </div>
+            <div class='form-group'>
+                     <label for='confpass'>Confirmer mot de passe</label>
+                     <input type='password' name='confpass' id='confpass'/>
+             </div>
+             <div class='form-group'>
+                    <label for='file'>Photo de profil</label>
+                    <input type='file' name='file' id='file'/>
+            </div>
+             
+             <button type='submit' class='btn btn-primary'>Envoyer</button>
+       </form>
+
+  </section>
+{% endblock%}

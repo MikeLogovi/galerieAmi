@@ -1,0 +1,59 @@
+{% extends 'layout.html'%}
+{% block title%}
+ MA GALERIE AMI
+{% endblock %}
+{%block styling%}
+  ../bootstrap/css/bootstrap.min.css
+{%endblock%}
+{% block body%}
+{%if user%}
+  <h2>Les amis de {{user.userName}} de type {{typeName}}</h2>
+{% else %}
+<h2>Les amis de type {{typeName}}</h2>
+{%endif%}
+
+    <div class="row">
+        {%if user%}
+           {% for ami in user.amis%}
+                 {% for type in ami.types%}
+                      {% if type.name == typeName%}
+                      <div class="col-md-4">
+                            <div class="card mb-4 shadow-sm">
+                                <a href='/uploads/mike1.jpg'><img class="card-img-top" src="/uploads/mike1.jpg" alt="Card image cap"></a>
+                                <div class="card-body">
+                                <p class="card-text">{{ami.description}}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                    <a href='/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-success">Voir profil</a>
+                                    <a href='/edit/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-warning">Editer</a>
+                                    <a href='/delete//{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-danger">Supprimer</a>
+                                    </div>
+                                    <small class="text-muted">9 mins</small>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                      {%endif%}
+                 {% endfor%}
+           {% endfor%}
+        {% else%}
+        {%for ami in type.amis%}
+                <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <a href='/uploads/mike1.jpg'><img class="card-img-top" src="/uploads/mike1.jpg" alt="Card image cap"></a>
+                    <div class="card-body">
+                    <p class="card-text">{{ami.description}}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        
+                        <small class="text-muted">9 mins</small>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+    {% endfor %}
+        {% endif %}
+         
+    </div>
+{% endblock %}
