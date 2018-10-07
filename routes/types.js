@@ -6,7 +6,7 @@ var mongoose=require('mongoose');
 var moment = require('moment');
 moment.locale('fr');
 var dateFormat = require('dateformat');
-var now=new Date();
+
 var redirectThem=(req,res,next)=>{
     if(req.session.myUser.userName!=req.params.myUserUserName){
          res.redirect('/'+req.session.myUser.userName);
@@ -64,7 +64,7 @@ router.post('/:myUserUserName/types/newType',redirectThem,(req,res)=>{
                     type.description=req.body.description;
                     type.color=req.body.color;
                     type.picture='/uploads/'+req.file.filename;
-                    type.created_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");;
+                    type.created_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");;
                     type.save().then(type=>{
                         res.redirect('/'+req.session.myUser.userName+'/types');
                     });
@@ -223,7 +223,7 @@ router.post('/:myUserUserName/types/:name/edit',redirectThem,(req,res)=>{
                         if(req.file){
                             type.picture='/uploads/'+req.file.filename;
                         }
-                        type.updated_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");
+                        type.updated_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");
                         type.save(types=>{
                             res.redirect('/'+req.session.myUser.userName+'/types');
                         });

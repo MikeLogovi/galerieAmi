@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var dateFormat = require('dateformat');
-var now=new Date();
+var bcrypt = require('bcryptjs');
 var userSchema = new mongoose.Schema({
     userName:String,
     password:String,
@@ -11,7 +11,7 @@ var userSchema = new mongoose.Schema({
     },
     created_at:{
         type:String,
-        default:dateFormat(now,"yyyy-mm-dd HH:MM:ss")
+        default:dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss")
     },
     updated_at:{
         type:String,
@@ -25,7 +25,14 @@ var userSchema = new mongoose.Schema({
     ]
 });
 
-
+userSchema.pre('save',async function(next){
+    try{
+        const salt = await bcrypt.genSalt(10);
+        this.password= await bcrypt.hash(this.password,salt);
+    }catch(error){
+        next(error);
+    }
+});
 
 var User = mongoose.model('User',userSchema);
 

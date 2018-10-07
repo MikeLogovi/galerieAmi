@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var moment = require('moment');
 moment.locale('fr');
 var dateFormat = require('dateformat');
-var now=new Date();
+
 var redirectUnAuthorized=(req,res,next)=>{
     if(req.session.myUser.userName!=req.params.userName){
         res.redirect('/'+req.session.myUser.userName);
@@ -71,7 +71,8 @@ router.post('/edit/:userName',redirectUnAuthorized,(req,res)=>{
             if(req.file){
                 user.picture='/uploads/'+req.file.filename;
             }
-            user.updated_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");;
+            
+            user.updated_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");;
             user.save(user=>{
                 res.redirect('/'+req.session.myUser.userName);
             });
@@ -162,7 +163,7 @@ router.post('/edit/:userName/:id',redirectUnAuthorized,(req,res)=>{
                            ami.picture='/uploads/'+req.file.filename;
                         }
                         ami.types=req.body.typesAmi;
-                        ami.updated_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");
+                        ami.updated_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");
                         ami.save(ami=>{
                             res.redirect('/'+req.session.myUser.userName);
                         });
@@ -233,7 +234,7 @@ router.post('/:userName/newFriend',redirectUnAuthorized,(req,res)=>{
             ami.description=req.body.description;
             ami.picture='/uploads/'+req.file.filename;
             
-            ami.created_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");
+            ami.created_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");
             ami.save().then(amie=>{
                 
                 if(user.amis.push(mongoose.Types.ObjectId(amie._id))){

@@ -42,8 +42,8 @@
                                 <div class="card-body">
                                         <p class="card-text">
                                           <span style='color:dodgerblue'>{{ami.firstName}} {{ami.lastName}}</span><br/>
-                                          {%if (ami.description|length)>25%}
-                                                {{ami.description|truncate(25,true,"...")}}
+                                          {%if (ami.description|length)>10%}
+                                                {{ami.description|truncate(10,true,"...")}}
                                           {%else%}
                                           {{ami.description}}
                                           {%endif%}

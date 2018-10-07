@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var dateFormat = require('dateformat');
-var now=new Date();
 var typeSchema = new mongoose.Schema({
     name:String,
     description:String,
@@ -11,7 +10,7 @@ var typeSchema = new mongoose.Schema({
     },
     created_at:{
         type:String,
-        default:dateFormat(now,"yyyy-mm-dd HH:MM:ss")
+        default:dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss")
     },
     updated_at:{
         type:String,
