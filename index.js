@@ -11,7 +11,7 @@ var path=require('path');
 var uploads = multer({
     dest:__dirname+'/uploads'
 });
-mongoose.connect('mongodb://MikeLogovi:MUGIWARA20$@ds251632.mlab.com:51632/amitie',{useNewUrlParser:true});
+mongoose.connect('mongodb://MikeLogovi:MUGIWARA20$@ds125453.mlab.com:25453/heroku_vr7nz236',{useNewUrlParser:true});
 var app = express();
 app.set('port',(process.env.PORT||5000));
 app.use('/bootstrap/css',express.static(__dirname+'/node_modules/bootstrap/dist/css'));
