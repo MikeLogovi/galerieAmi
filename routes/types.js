@@ -3,6 +3,10 @@ var Type = require('./../models/Type');
 var User = require('./../models/User');
 var Ami = require('./../models/Ami');
 var mongoose=require('mongoose');
+var moment = require('moment');
+moment.locale('fr');
+var dateFormat = require('dateformat');
+var now=new Date();
 var redirectThem=(req,res,next)=>{
     if(req.session.myUser.userName!=req.params.myUserUserName){
          res.redirect('/'+req.session.myUser.userName);
@@ -60,6 +64,7 @@ router.post('/:myUserUserName/types/newType',redirectThem,(req,res)=>{
                     type.description=req.body.description;
                     type.color=req.body.color;
                     type.picture='/uploads/'+req.file.filename;
+                    type.created_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");;
                     type.save().then(type=>{
                         res.redirect('/'+req.session.myUser.userName+'/types');
                     });
@@ -72,11 +77,11 @@ router.get('/:myUserUserName/types/:name',redirectThem,(req,res)=>{
         if(req.params.myUserUserName=='admin'){
             Type.find({'name':req.params.name},(err,type)=>{
                 if(err||type==null){
-                    res.render('errors/index.html') ;
+                    res.render('errors/index.html',{myUser:req.params.userName}) ;
                   }
             }).populate('amis').then((type,err)=>{
               if(err||type==null){
-                res.render('errors/index.html') ;
+                res.render('errors/index.html',{myUser:req.params.userName}) ;
               }
               else{
                 
@@ -84,6 +89,10 @@ router.get('/:myUserUserName/types/:name',redirectThem,(req,res)=>{
                   Ami.find({}).populate('types').then(amis=>{
                      new Promise((resolve,reject)=>{
                         amis.forEach(ami=>{
+                            ami.created_at=moment(ami.created_at,"YYYY-MM-DD HH:mm:ss").fromNow();
+                            if(ami.updated_at!=""){
+                               ami.updated_at=moment(ami.updated_at,"YYYY-MM-DD HH:mm:ss").fromNow();
+                            }
                             var typeAmi=ami.types;
                             typeAmi.forEach(type=>{
                                   if(type.name==req.params.name){
@@ -109,11 +118,11 @@ router.get('/:myUserUserName/types/:name',redirectThem,(req,res)=>{
 
             Type.findOne({"name":req.params.name},(err,type)=>{
                 if(err||type==null){
-                    res.render('errors/index.html') ;
+                    res.render('errors/index.html',{myUser:req.params.userName}) ;
                   }
             }).then((type,err)=>{
                 if(err||type==null){
-                    res.render('errors/index.html') ;
+                    res.render('errors/index.html',{myUser:req.params.userName}) ;
                 }
                 else{
                     User.findOne({"userName":req.params.myUserUserName}).populate("amis").then(user=>{
@@ -123,7 +132,10 @@ router.get('/:myUserUserName/types/:name',redirectThem,(req,res)=>{
                              user.amis.forEach(ami=>{
                                 
                                 var tabAmi=ami.types;
-                                
+                                ami.created_at=moment(ami.created_at,"YYYY-MM-DD HH:mm:ss").fromNow();
+                                if(ami.updated_at!=""){
+                                   ami.updated_at=moment(ami.updated_at,"YYYY-MM-DD HH:mm:ss").fromNow();
+                                }
                                  tabAmi.forEach(tyPe=>{
                                    
                                     if(tyPe.toString()==type._id.toString()){
@@ -160,11 +172,11 @@ router.get('/:myUserUserName/types/:name/edit',redirectThem,(req,res)=>{
         else{
             Type.find({'name':req.params.name},(err,type)=>{
                 if(err||type==null){
-                    res.render('errors/index.html') ;
+                    res.render('errors/index.html',{myUser:req.params.userName}) ;
                   }
             }).then((type,err)=>{
                 if(err||type==null){
-                    res.render('errors/index.html');
+                    res.render('errors/index.html',{myUser:req.params.userName});
                 }
                 else{
                 res.render('types/edit.html',{type:type,endpoint:'/'+req.params.myUserUserName+'/types/'+req.params.name+'/edit'});
@@ -180,11 +192,11 @@ router.post('/:myUserUserName/types/:name/edit',redirectThem,(req,res)=>{
     User.findOne({"userName":req.params.myUserUserName}).then(user=>{
         Type.findOne({'name':req.params.name},(err,type)=>{
             if(err||type==null){
-                res.render('errors/index.html') ;
+                res.render('errors/index.html',{myUser:req.params.userName}) ;
               }
         }).then((type,err)=>{
             if(err || type==null){
-                res.render('errors/index.html');
+                res.render('errors/index.html',{myUser:req.params.userName});
             } 
             else{
                 if(req.body.name){
@@ -211,6 +223,7 @@ router.post('/:myUserUserName/types/:name/edit',redirectThem,(req,res)=>{
                         if(req.file){
                             type.picture='/uploads/'+req.file.filename;
                         }
+                        type.updated_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");
                         type.save(types=>{
                             res.redirect('/'+req.session.myUser.userName+'/types');
                         });
@@ -225,11 +238,11 @@ router.post('/:myUserUserName/types/:name/edit',redirectThem,(req,res)=>{
 router.get('/:myUserUserName/types/:name/delete',redirectThem,(req,res)=>{
     Type.findOneAndRemove({'name':req.params.name},(err,type)=>{
         if(err||type==null){
-            res.render('errors/index.html') ;
+            res.render('errors/index.html',{myUser:req.params.userName}) ;
           }
     }).then((type,err)=>{
         if(err||type==null){
-            res.render('errors/index.html') ;
+            res.render('errors/index.html',{myUser:req.params.userName}) ;
           }
           else{
             res.redirect('/'+req.session.myUser.userName+'/types');

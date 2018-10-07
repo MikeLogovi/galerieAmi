@@ -3,6 +3,10 @@ var Ami = require('./../models/Ami');
 var User = require('./../models/User');
 var Type = require('./../models/Type');
 var mongoose = require('mongoose');
+var moment = require('moment');
+moment.locale('fr');
+var dateFormat = require('dateformat');
+var now=new Date();
 var redirectUnAuthorized=(req,res,next)=>{
     if(req.session.myUser.userName!=req.params.userName){
         res.redirect('/'+req.session.myUser.userName);
@@ -17,7 +21,22 @@ var redirectUnAuthorized=(req,res,next)=>{
 router.get('/:userName',redirectUnAuthorized,(req,res) =>{
     
     User.findOne({'userName':req.params.userName}).populate('amis').then(user =>{
-        res.render('amis/index.html',{user:user});
+        new Promise((resolve,reject)=>{
+            var myAmis=[] ;
+            
+            user.amis.forEach(ami=>{  
+                 ami.created_at=moment(ami.created_at,"YYYY-MM-DD HH:mm:ss").fromNow();
+                 if(ami.updated_at!=""){
+                    ami.updated_at=moment(ami.updated_at,"YYYY-MM-DD HH:mm:ss").fromNow();
+                 }                 
+                 myAmis.push(ami);
+           });
+               
+             user.amis=myAmis;
+             resolve(user);
+        }).then(user=>{
+            res.render('amis/index.html',{user:user});
+        });
     });
 });
 router.get('/edit/:userName',(req,res)=>{
@@ -52,6 +71,7 @@ router.post('/edit/:userName',redirectUnAuthorized,(req,res)=>{
             if(req.file){
                 user.picture='/uploads/'+req.file.filename;
             }
+            user.updated_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");;
             user.save(user=>{
                 res.redirect('/'+req.session.myUser.userName);
             });
@@ -71,13 +91,13 @@ router.get('/edit/:userName/:id',redirectUnAuthorized,(req,res)=>{
             });
             reject();      
         }).catch(()=>{
-            res.render('errors/notForAuth.html');
+            res.render('errors/notForAuth.html',{myUser:req.params.userName});
         }).then(()=>{
             Ami.findOne({"_id":req.params.id},(err,ami)=>{if(err || ami==null){
                 res.render('errors/index.html');
              }}).populate('types').then((ami,err)=>{
                 if(err || ami==null){
-                   res.render('errors/index.html');
+                   res.render('errors/index.html',{myUser:req.params.userName});
                 }
                 else{
                     Type.find({}).then(typees=>{
@@ -103,7 +123,7 @@ router.post('/edit/:userName/:id',redirectUnAuthorized,(req,res)=>{
             });
             reject();      
         }).catch(()=>{
-            res.render('errors/notForAuth.html');
+            res.render('errors/notForAuth.html',{myUser:req.params.userName});
         }).then(()=>{
             Ami.findOne({"_id":req.params.id},(err,ami)=>{
                 if(err || ami==null){
@@ -111,7 +131,7 @@ router.post('/edit/:userName/:id',redirectUnAuthorized,(req,res)=>{
                 }
             }).then((ami,err)=>{
                 if(err || ami==null){
-                    res.render('errors/index.html');
+                    res.render('errors/index.html',{myUser:req.params.userName});
                 }
                 else{
                     if(req.body.firstName){
@@ -142,6 +162,7 @@ router.post('/edit/:userName/:id',redirectUnAuthorized,(req,res)=>{
                            ami.picture='/uploads/'+req.file.filename;
                         }
                         ami.types=req.body.typesAmi;
+                        ami.updated_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");
                         ami.save(ami=>{
                             res.redirect('/'+req.session.myUser.userName);
                         });
@@ -165,11 +186,11 @@ router.get('/delete/:userName/:id',redirectUnAuthorized,(req,res)=>{
             });
             reject();      
         }).catch(()=>{
-            res.render('errors/notForAuth.html');
+            res.render('errors/notForAuth.html',{myUser:req.params.userName});
         }).then(()=>{
             Ami.findOneAndRemove({"_id":req.params.id},(err,ami)=>{
                 if(err || ami==null){
-                    res.render('errors/index.html');
+                    res.render('errors/index.html',{myUser:req.params.userName});
                 }
              }).then((ami,err)=>{
                  
@@ -184,7 +205,6 @@ router.get('/delete/:userName/:id',redirectUnAuthorized,(req,res)=>{
 });
 router.get('/:userName/newFriend',redirectUnAuthorized,(req,res)=>{
     Type.find({}).then(typees=>{
-        console.log(req.session.myUser.userName);
         res.render('amis/edit.html',{title:"Ajout d'ami",typees:typees,endpoint:'/'+req.session.myUser.userName+'/newFriend'});
     });
    
@@ -206,17 +226,18 @@ router.post('/:userName/newFriend',redirectUnAuthorized,(req,res)=>{
          }
          else{
             var ami=new Ami();
+            
             ami.types=req.body.typesAmi;
             ami.firstName=req.body.firstName;
             ami.lastName=req.body.lastName;
             ami.description=req.body.description;
             ami.picture='/uploads/'+req.file.filename;
-          
+            
+            ami.created_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");
             ami.save().then(amie=>{
-                console.log(amie);
+                
                 if(user.amis.push(mongoose.Types.ObjectId(amie._id))){
                     user.save().then(theUser=>{
-                        console.log(theUser);
                         res.redirect('/'+req.session.myUser.userName);
                     });
                 }
@@ -242,7 +263,7 @@ router.post('/:userName/newFriend',redirectUnAuthorized,(req,res)=>{
             res.render('errors/index.html');
         }}).populate('types').then((ami,err)=>{
             if(err || ami==null){
-                res.render('errors/index.html');
+                res.render('errors/index.html',{myUser:req.params.userName});
             }
             else{
                 
@@ -256,7 +277,7 @@ router.post('/:userName/newFriend',redirectUnAuthorized,(req,res)=>{
                         });
                         reject();      
                     }).catch(()=>{
-                        res.render('errors/notForAuth.html');
+                        res.render('errors/notForAuth.html',{myUser:req.params.userName});
                     }).then(()=>{
                         res.render('amis/show.html',{ami:ami,myUserUserName:req.session.myUser.userName});
                     });

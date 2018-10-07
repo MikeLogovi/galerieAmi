@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-
+var dateFormat = require('dateformat');
+var now=new Date();
 var userSchema = new mongoose.Schema({
     userName:String,
     password:String,
@@ -7,6 +8,14 @@ var userSchema = new mongoose.Schema({
     role:{
         type:String,
         default:'user'
+    },
+    created_at:{
+        type:String,
+        default:dateFormat(now,"yyyy-mm-dd HH:MM:ss")
+    },
+    updated_at:{
+        type:String,
+        default:""
     },
     amis:[
         {

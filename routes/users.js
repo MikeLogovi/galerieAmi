@@ -1,6 +1,9 @@
 var router = require('express').Router();
 var User = require('./../models/User');
-
+var moment = require('moment');
+moment.locale('fr');
+var dateFormat = require('dateformat');
+var now=new Date();
 var redirectToBoard=(req,res,next)=>{
      if(req.session.myUser){
          res.redirect('/'+req.session.myUser.userName);
@@ -50,6 +53,7 @@ router.post('/inscription',redirectToBoard,(req,res)=>{
                    user.picture='/uploads/anonyme.jpg';
                 }
                 user.role='user';
+                user.created_at=dateFormat(now,"yyyy-mm-dd HH:MM:ss");
                 user.save().then(theuser=>{
                     req.session.myUser.userName=req.body.userName;
                     res.redirect('/'+req.body.userName);
@@ -64,15 +68,9 @@ router.post('/inscription',redirectToBoard,(req,res)=>{
 router.get('/connexion',redirectToBoard,(req,res)=>{
     res.render('users/login.html',{endpoint:'/connexion'});
 });
-router.post('/connexion',(req,res)=>{
+router.post('/connexion',redirectToBoard,(req,res)=>{
     req.session.myUser={};
     User.findOne({"userName":req.body.userName}).then((user,err)=>{
-        console.log("user=>\n");
-        console.log(user);
-        console.log("err=>\n");
-        console.log(err);
-        console.log('password body=>\n');
-        console.log(req.body.password);
         if(err || user==null){
             var errors=[{ msg: "Couple Utilisateur/Mot de passe invalidee"}];
             res.render('users/login.html',{body:req.body,errors:errors,endpoint:'/connexion'});
