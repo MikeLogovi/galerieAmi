@@ -13,7 +13,7 @@ var uploads = multer({
 });
 mongoose.connect('mongodb://MikeLogovi:MUGIWARA20$@ds251632.mlab.com:51632/amitie',{useNewUrlParser:true});
 var app = express();
-const port = process.env.port||8080;
+const port = 8080;
 app.use('/bootstrap/css',express.static(__dirname+'/node_modules/bootstrap/dist/css'));
 app.use('/uploads',express.static(__dirname+'/uploads'));
 app.use('/bootstrap/js',express.static(__dirname+'/node_modules/bootstrap/dist/js'));
