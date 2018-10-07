@@ -1,47 +1,59 @@
 {% extends 'layout.html'%}
-{%block styling%}
-  {%if ami._id%}
-  ../../../bootstrap/css/bootstrap.min.css
-  {%else%}
-  ../../bootstrap/css/bootstrap.min.css
-  {%%endif}
+{%block styling%} 
+  ../../../../bootstrap/css/bootstrap.min.css  
 {%endblock%}
 {%block title%}
-  {{title}}
+    {% if type %}
+       Edition du type {{type.name}}
+    {% else %}
+       Ajout d'un nouveau type d'ami
+    {% endif %}
 {%endblock%}
 {%block body%}
-  {%if errors %}
-    <div class='alert alert-danger alert-dismiss fade show' role='alert'>
-        {%for error in errors%}
-           {{error}}
-        {% endfor %}
-        <button type='button' class='close' data-dismiss='alert' aria-label='close'>
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-  {%endif%}
-   <form method='post' action='{{endpoint}}' enctype='multipart/form-data'>
-        <div class='form-group'>
-             <label for='name'>Nom</label>
-             <input type='text' id='name' value="{{body.name or type.name}}" name='name' class='form-control'/>
-        </div>
-        <div class='form-group'>
-                <label for='color'>Couleur</label>
-                <input type='color'  id='put' />
-                <input type='hidden' name='color' id='get' value="{{body.color or type.color}}"/>
-        </div>
-        <div class='form-group'>
-                <label for='description'>Description</label>
-                <textarea name='description' id='description'>{{body.description or type.description}}</textarea>
-        </div>
-        <div class='form-group'>
-                <label for='file'>Image</label>
-                <input type='file' name='file' id='file'/>
-        </div>
-        <button type='submit' class='btn btn-primary'>Envoyer</button>
-   </form>
+  
+ <section>
+      <div class='container' style='background-color:#eee'>
+          <br/>
+           <h2 class='text-info text-center' style='font-family:fantasy'>AJOUT D'UN NOUVEAU TYPE D'AMI</h2>
+           {%if errors %}
+           <div class='alert alert-danger alert-dismiss fade show' role='alert'>
+              {%for error in errors%}
+                 {{error.msg}}.<br/>
+              {% endfor %}
+              
+          </div>
+        {%endif%}
+         <form method='post' action='{{endpoint}}' enctype='multipart/form-data'>
+              <div class='form-group'>
+                   <label for='name'>Nom</label>
+                   <input type='text' id='name' {% if body or type %}value="{{body.name or type.name}}" {%endif%} name='name' class='form-control'/>
+              </div>
+              
+              <div class='form-group'>
+                      <label for='description'>Description</label>
+                      <textarea name='description' id='description' class='form-control'>{% if type or body %}{{body.description or type.description}}{% endif %}</textarea>
+              </div>
+              <div class='form-group'>
+                  <label for='color'>Couleur</label>
+                  <input type='color'  id='put' onfocus='change()'/>
+                  <input type='text' name='color' id='get' {% if type or body %} value="{{body.color or type.color}}"{% endif %}/>
+          </div>
+              <div class='form-group'>
+                      <label for='file'>Image</label>
+                      <input type='file' name='file' id='file'/>
+              </div>
+              <button type='submit' class='btn btn-primary'>Envoyer</button>
+         </form>
+      
+       <br/>
+      </div>
+          
+  </section>
+  <script type='text/javascript'>
+      function change(){
+        var put=document.getElementById('put').value;
+        document.getElementById('get').value=put;
+      }
+
+  </script>
 {%endblock%}
-<script>
-  var put=document.getElementById('put').value;
-  document.getElementById('get').value=put;
-</script>

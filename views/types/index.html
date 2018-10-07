@@ -3,7 +3,7 @@
  MA GALERIE AMI
 {% endblock %}
 {%block styling%}
-  bootstrap/css/bootstrap.min.css
+  ../../bootstrap/css/bootstrap.min.css
 {%endblock%}
 {% block body%}
  <h2 class='text-info'>Les Types d'Amis</h2>
@@ -14,13 +14,18 @@
   <hr/>
      <div class='card'>
          <div class='card-header'>
-            <a href='/{{myUserUserName}}/types/{{type.name}}'><img style='width:10%;height:100%' class='img img-circle' src='/uploads/{{type.picture}}' alt='image caracterisant le type {{type.name}}'/>
-             {{type.name}}</a>
-             <hr/>
-             <a href='/{{myUserUserName}}/types/{{type.name}}/edit' class='btn btn-warning'>Editer</a>
-             <a href='/{{myUserUserName}}/types/{{type.name}}/delete' class='btn btn-danger'>Supprimer</a>
+            <div class='text-center'>
+                <a  style='color:{{type.color}}' href='/{{myUserUserName}}/types/{{type.name}}'><img style='width:10%;height:100%' class='img img-circle' src='{{type.picture}}' alt='image caracterisant le type {{type.name}}'/>
+                  <span >{{type.name}}</span></a>
+                  <hr/>
+                  <a href='/{{myUserUserName}}/types/{{type.name}}/edit' class='btn btn-warning'>Editer</a>
+                  <a href='/{{myUserUserName}}/types/{{type.name}}/delete' class='btn btn-danger'>Supprimer</a>
+            </div>
+           
+            
         </div>
          <div class='card-body'>
+           
                 {{type.description}}
         </div>
      </div>

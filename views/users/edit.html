@@ -5,48 +5,54 @@
 {%block title%}
     {%if user%}
       Edition de profil
-    {%else}
+    {%else%}
       Inscription
     {%endif%}
 {% endblock %}
 
 {%block  body%}
-  <section class='text-center'>
-      {%if user%}
-       <h3 class='text-primary'>EDITION DE PROFIL</h3>
-      {%else}
-      <h3 class='text-primary'>INSCRIPTION</h3>
+  <section >
+    <div class='container' style='background-color:#eee'>
+        <br/>    
+        {%if user%}
+       <h3 class='text-primary text-center' style='font-family:fantasy'>EDITION DE PROFIL</h3>
+      {%else%}
+      <h3 class='text-primary text-center' style='font-family:fantasy'>INSCRIPTION</h3>
       {%endif%}
       {% if errors%}
          <div class='alert alert-danger alert-dismiss fade show'>
              {%for error in errors%}
-                {{error}}
+                {{error.msg}}.<br/>
              {%endfor%}
              <button type='close' data-dismiss='alert' role='close'>
                  <span>&times;</span>
              </button>
          </div>
       {%endif%}
-       <form class='well' method='POST' action='{{endpoint}}' enctype='multipart/form-data'>
+       <form class= 'well'  method='POST' action='{{endpoint}}' enctype='multipart/form-data'>
              <div class='form-group'>
                  <label for='userName'>Nom d'utilisateur</label>
-                 <input type='text' name='userName' id='userName' value="{{body.userName or user.userName }}"/>
+                 <input type='text' name='userName' id='userName' value="{{body.userName or user.userName }}" class='form-control' />
              </div>
              <div class='form-group'>
                     <label for='password'>Mot de passe</label>
-                    <input type='password' name='password' id='password' />
+                    <input type='password' name='password' id='password' class='form-control'/>
             </div>
             <div class='form-group'>
                      <label for='confpass'>Confirmer mot de passe</label>
-                     <input type='password' name='confpass' id='confpass'/>
+                     <input type='password' name='confpass' id='confpass' class='form-control'/>
              </div>
              <div class='form-group'>
-                    <label for='file'>Photo de profil</label>
+                    <label for='file'>Photo de profil</label><br/>
                     <input type='file' name='file' id='file'/>
             </div>
-             
-             <button type='submit' class='btn btn-primary'>Envoyer</button>
-       </form>
+             <div class='form-group'>
+                    <button type='submit' class='btn btn-primary'>Envoyer</button>
 
-  </section>
+             </div>
+               
+            </form>
+            <br/>
+      </div>
+ </section>
 {% endblock%}

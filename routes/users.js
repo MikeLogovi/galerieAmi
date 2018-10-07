@@ -1,50 +1,94 @@
 var router = require('express').Router();
 var User = require('./../models/User');
-router.get('/',(req,res)=>{
+
+var redirectToBoard=(req,res,next)=>{
+     if(req.session.myUser){
+         res.redirect('/'+req.session.myUser.userName);
+     }
+     else{
+         next();
+     }
+};
+router.get('/',redirectToBoard,(req,res)=>{
+    
     res.render('users/index.html');
 });
-router.get('/inscription',(req,res)=>{
+router.get('/inscription',redirectToBoard,(req,res)=>{
      res.render('users/edit.html',{endpoint:'/inscription'});
 });
-router.post('/inscription',(req,res)=>{
-    req.check('userName',"Le nom d'utilisateur doit avoir au moins 3 caractères").notEmpty().isLength({min:3});
-    req.check('userName',"Le nom d'utilisateur existe déjà").userAlreadyExists(req.body.userName);
-    req.check('password',"Veuillez bien confirmer votre mot de passe").isEqual(req.body.confpass);
-    if(req.file.filename){
-        filename=typeof req.files['file']!=undefined?req.files['file'][0].filename:'';
-        req.check('file','Format de fichier jpg,jpeg,png ou gif uniquement sont autorisées').isImage(filename);
-    }
-    var errors=req.validationErrors();
-    if(errors){
-        res.render('users/edit.html',{body:req.body,errors:errors,endpoint:'/inscription'});
-    }
-    else{
-        User.userName=req.body.userName;
-        User.password=req.body.password;
-        if(req.file.filename){
-            User.picture='/uploads/'+req.file.filename;
+router.post('/inscription',redirectToBoard,(req,res)=>{
+    req.session.myUser={};
+    User.findOne({"userName":req.body.userName}).then((user,err)=>{
+        var errors;
+        if(err){
+            errors=[{msg:"Erreur avec la base de données.Veuillez reéssayez ultérieurement"}];
+            res.render('users/edit.html',{body:req.body,errors:errors,endpoint:'/inscription'});
+        }
+        else if(user){
+            errors=[{msg:"Utilisateur existant!"}];
+            res.render('users/edit.html',{body:req.body,errors:errors,endpoint:'/inscription'});
         }
         else{
-            User.picture='/uploads/anonyme.jpg';
+            req.check('userName',"Le nom d'utilisateur doit avoir au moins 3 caractères").isLength({min:3});
+            req.check('userName',"Le nom d'utilisateur existe déjà").userAlreadyExists(req.body.userName);
+            req.check('password',"Veuillez bien confirmer votre mot de passe").equals(req.body.confpass);
+            if(req.file){
+                req.check('file','Format de fichier jpg,jpeg,png ou gif uniquement sont autorisées').isImage(req.file.originalname);
+            }
+            var errors=req.validationErrors();
+            if(errors){
+                res.render('users/edit.html',{body:req.body,errors:errors,endpoint:'/inscription'});
+            }
+            else{
+                var user = new User();
+                user.userName=req.body.userName;
+                user.password=req.body.password;
+                if(req.file){
+                    user.picture='/uploads/'+req.file.filename;
+                }
+                else{
+                   user.picture='/uploads/anonyme.jpg';
+                }
+                user.role='user';
+                user.save().then(theuser=>{
+                    req.session.myUser.userName=req.body.userName;
+                    res.redirect('/'+req.body.userName);
+                });
+                
+            }
         }
-        User.save();
-        req.session.myUser.userName=req.body.userName;
-        res.redirect('/'+req.body.userName);
-    }
+    });
+  
    
 });
-router.get('/connexion',(req,res)=>{
+router.get('/connexion',redirectToBoard,(req,res)=>{
     res.render('users/login.html',{endpoint:'/connexion'});
 });
 router.post('/connexion',(req,res)=>{
-     if(User.findOne({"name":req.body.userName,"password":req.body.password})){
-        req.session.myUser.userName=req.body.userName;
-        res.redirect('/'+req.body.userName);
-     }
-     else{
-        var errors=["Couple Utilisateur/Mot de passe invalide"];
-        res.render('users/login.html',{body:req.body,errors:errors,endpoint:'/connexion'});
-     }
+    req.session.myUser={};
+    User.findOne({"userName":req.body.userName}).then((user,err)=>{
+        console.log("user=>\n");
+        console.log(user);
+        console.log("err=>\n");
+        console.log(err);
+        console.log('password body=>\n');
+        console.log(req.body.password);
+        if(err || user==null){
+            var errors=[{ msg: "Couple Utilisateur/Mot de passe invalidee"}];
+            res.render('users/login.html',{body:req.body,errors:errors,endpoint:'/connexion'});
+        }
+        else{
+           req.check('password',"Couple Utilisateur/Mot de passe invalide").equals(user.password); 
+           var errors=req.validationErrors();
+           if(errors){
+            res.render('users/login.html',{body:req.body,errors:errors,endpoint:'/connexion'});
+           }
+           else{
+            req.session.myUser.userName=req.body.userName;
+            res.redirect('/'+req.body.userName);
+           }
+        } 
+    });
     
 });
 router.get('/deconnexion',(req,res)=>{

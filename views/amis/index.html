@@ -1,56 +1,62 @@
 {% extends 'layout.html'%}
-{% block title%}
+{% block title %}
  MA GALERIE AMI
 {% endblock %}
-{%block styling%}
+{% block styling %}
   ../bootstrap/css/bootstrap.min.css
-{%endblock%}
-{% block body%}
+{% endblock %}
+{% block body  %}
  <section class='jumbotron text-center'>
-     <div class="container">
-            <a href='/'>
-              <img src='/uploads/{{user.picture}}' class='img img-circle'/ alt='image de {{user.username}}' style='width:30%'>
+    <div class="container">
+            <a href='/edit/{{user.userName}}'>
+              <img src='{{user.picture}}' class='img img-circle' alt='image de {{user.username}}' style='width:30%'/>
               <h2 class='jumbotron-heading' style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">{{user.userName}}</h2>
             </a>
               <hr class='my-1'/>
             <p style="font-family:'Arial';font-size:15px;font-weight:bold">Voici votre album d'amitié,rappelez vous de tous vos amis du passé,et du present.<br/>Ceci est votre recueil!</p>
-            {% if user.username!='admin'%}
+            {% if user.role!='admin' %}
             <a class='btn btn-primary' href='/{{user.userName}}/newFriend'>Ajouter un ami</a>
-            {%else%}
+            {% else %}
              <div class='row'>
-               <div class='col-sm-4'>
-                  <a class='btn btn-primary' href='/{{user.userName}}/newFriend'>Ajouter un ami</a>
-               </div>
-               <div class='col-sm-4'>
-                  <a class='btn btn-success' href='/{{user.userName}}/types/newType'>Ajouter un type d'ami</a>
-                </div>
-                <div class='col-sm-4'>
-                    <a class='btn btn-warning' href='/{{user.userName}}/types'>Voir les types d'ami</a>
-                </div>
-             </div>
-            {%endif%}
-      </div>
-        
-</section>
-    <div class="row">
-         {%for ami in user.amis%}
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <a href='/uploads/mike1.jpg'><img class="card-img-top" src="/uploads/mike1.jpg" alt="Card image cap"></a>
-                <div class="card-body">
-                  <p class="card-text">{{ami.description}}</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <a href='/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-success">Voir profil</a>
-                      <a href='/edit/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-warning">Editer</a>
-                      <a href='/delete/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-danger">Supprimer</a>
+                    <div class='col-sm-4'>
+                        <a class='btn btn-primary' href='/{{user.userName}}/newFriend'>Ajouter un ami</a>
                     </div>
-                    <small class="text-muted">9 mins</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div>
-        {% endfor %}
+                    <div class='col-sm-4'>
+                        <a class='btn btn-success' href='/{{user.userName}}/types/newType'>Ajouter un type d'ami</a>
+                    </div>
+                      <div class='col-sm-4'>
+                          <a class='btn btn-warning' href='/{{user.userName}}/types'>Voir les types d'ami</a>
+                      </div>
+             </div>
+            {% endif %}
     </div>
+</section>
+<div>
+      
+      <div class='row'>
+          {% for ami in user.amis %}
+            <div class="col-sm-3">
+               
+                      <div class="card shadow-sm">
+                                    <a href='{{ami.picture}}'><img class="card-img-top" style="width:100%;height:250px" src="{{ami.picture}}" alt="Card image cap"></a>
+                                <div class="card-body">
+                                        <p class="card-text">{{ami.description}}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                              <div class="btn-group">
+                                                <a href='/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-success">Voir profil</a>
+                                                <a href='/edit/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-warning">Editer</a>
+                                                <a href='/delete/{{user.userName}}/{{ami._id}}' class="btn btn-sm btn-danger">Supprimer</a>
+                                              </div>
+                                              
+                                              
+                                        </div>
+                                        <small class="text-muted">9 mins</small>
+                                </div>
+                      </div>
+                    
+            </div>
+           {% endfor%} 
+    </div>
+    
+</div> 
 {% endblock %}

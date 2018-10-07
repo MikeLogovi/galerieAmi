@@ -1,9 +1,13 @@
 var mongoose = require('mongoose');
 
-var userSchema = mongoose.Schema({
+var userSchema = new mongoose.Schema({
     userName:String,
     password:String,
     picture:String,
+    role:{
+        type:String,
+        default:'user'
+    },
     amis:[
         {
             type:mongoose.Schema.Types.ObjectId,
@@ -12,11 +16,7 @@ var userSchema = mongoose.Schema({
     ]
 });
 
-userSchema.virtual('amis',{
-     ref:'Ami',
-     localField:'_id',
-     foreignField:'users'
-});
+
 
 var User = mongoose.model('User',userSchema);
 

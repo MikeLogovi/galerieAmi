@@ -7,31 +7,33 @@ Connexion
 {% endblock %}
 
 {%block  body%}
-  <section class='text-center'>
-      
-      <h3 class='text-info'>CONNEXION</h3>
-      {% if errors%}
-         <div class='alert alert-danger alert-dismiss fade show'>
-             {%for error in errors%}
-                {{error}}
-             {%endfor%}
-             <button type='close' data-dismiss='alert' role='close'>
-                 <span>&times;</span>
-             </button>
-         </div>
-      {%endif%}
-       <form class='well' method='POST' action='{{endpoint}}' enctype='multipart/form-data'>
-             <div class='form-group'>
-                 <label for='userName'>Nom d'utilisateur</label>
-                 <input type='text' name='userName' id='userName' value="{{body.userName}}"/>
-             </div>
-             <div class='form-group'>
-                    <label for='password'>Mot de passe</label>
-                    <input type='password' name='password' id='password' />
-            </div>
-           
-             <button type='submit' class='btn btn-primary'>Envoyer</button>
-       </form>
-
+  <section >
+    <div class='container' style='background-color:#eee'>
+        <br/>
+            <h3 class='text-info text-center' style='font-family: fantasy'>CONNEXION</h3>
+            {% if errors%}
+               <div class='alert alert-danger alert-dismiss fade show'>
+                   {%for error in errors%}
+                      {{error.msg}}.<br/>
+                   {%endfor%}
+                   <button type='close' data-dismiss='alert' role='close'>
+                       <span>&times;</span>
+                   </button>
+               </div>
+            {%endif%}
+             <form class='well' method='POST' action='{{endpoint}}' enctype='multipart/form-data'>
+                   <div class='form-group'>
+                       <label for='userName'>Nom d'utilisateur</label>
+                       <input type='text' name='userName' id='userName' {%if body%}value="{{body.userName}}"{%endif%} class='form-control'/>
+                   </div>
+                   <div class='form-group'>
+                          <label for='password'>Mot de passe</label>
+                          <input type='password' name='password' id='password' class='form-control' />
+                  </div>
+                 
+                   <button type='submit' class='btn btn-primary'>Envoyer</button>
+             </form>
+             <br/>
+    </div>
   </section>
 {% endblock%}

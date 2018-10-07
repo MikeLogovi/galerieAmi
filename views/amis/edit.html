@@ -4,49 +4,64 @@
   ../../../bootstrap/css/bootstrap.min.css
   {%else%}
   ../../bootstrap/css/bootstrap.min.css
-  {%%endif}
+  {%endif%}
 {%endblock%}
 {%block title%}
   {{title}}
 {%endblock%}
 {%block body%}
-  {%if errors %}
-    <div class='alert alert-danger alert-dismiss fade show' role='alert'>
-        {%for error in errors%}
-           {{error}}
-        {% endfor %}
-        <button type='button' class='close' data-dismiss='alert' aria-label='close'>
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-  {%endif%}
-   <form method='post' action='{{endpoint}}' enctype='multipart/form-data'>
-        <div class='form-group'>
-             <label for='lastName'>Nom</label>
-             <input type='text' id='lastName' value="{{body.lastName or ami.lastName}}" name='lastName' class='form-control'/>
-        </div>
-        <div class='form-group'>
-                <label for='firstName'>Prénom</label>
-                <input type='text' id='firstName' value="{{body.firstName or ami.firstName}}" name='firstName' class='form-control'/>
-        </div>
-        <div class='form-group'>
-                <label for='description'>Description</label>
-                <textarea name='description' id='description'>{{body.description or ami.description}}</textarea>
-        </div>
-        <div class='form-group'>
-                <label for='file'>Photo</label>
-                <input type='file' name='file' id='file'/>
-        </div>
-        <div class='form-group'>
-        
-            {% for type in typees%}
-                 <label>
-                     <input type='checkbox' name='typesAmi[]'value='type._id' {%if ami.types.indexOf(type)!=-1 %}checked{%endif%}/>{{type.name}}
-                 </label>
-            {% endfor%}
-        
-        </div>
+  
+<section>
+    <div class='container' style='background-color:#eee'>
+        <br/>
+         <h2 class='text-info text-center' style='font-family:fantasy'>
+            {%if ami %}
+            EDITION DU PROFIL DE L'AMI
+            {%else%}
+            AJOUT D'UN NOUVEL AMI
+            {%endif%} 
+        </h2>
        
-        <button type='submit' class='btn btn-primary'>Envoyer</button>
-   </form>
+         {%if errors %}
+         <div class='alert alert-danger alert-dismiss fade show'>
+            {%for error in errors%}
+               {{error.msg}}.<br/>
+            {%endfor%}
+           
+        </div>
+        {%endif%}
+               <form method='post' action='{{endpoint}}' enctype='multipart/form-data'>
+                    <div class='form-group'>
+                         <label for='lastName'>Nom</label>
+                         <input type='text' id='lastName' {%if body or ami%}value="{{body.lastName or ami.lastName}}"{%endif%} name='lastName' class='form-control'/>
+                    </div>
+                    <div class='form-group'>
+                            <label for='firstName'>Prénom</label>
+                            <input type='text' id='firstName' {%if body or ami%} value="{{body.firstName or ami.firstName}}" {%endif%} name='firstName' class='form-control'/>
+                    </div>
+                    <div class='form-group'>
+                            <label for='description'>Description</label>
+                            <textarea name='description' id='description' class='form-control'>{%if body or ami%}{{body.description or ami.description}}{%endif%}</textarea>
+                    </div>
+                    <div class='form-group'>
+                            <label for='file'>Photo</label>
+                            <input type='file' name='file' id='file'/>
+                    </div>
+                    <div class='form-group'>
+                    
+                        {% for type in typees%}
+                             <label>
+                                 <input type='checkbox' name='typesAmi[]' value='{{type._id}}' {%if (ami and ami.types.indexOf(type)!=-1) %}checked{%endif%}/>{{type.name}}
+                             </label>
+                        {% endfor%}
+                    
+                    </div>
+                   
+                    <button type='submit' class='btn btn-primary'>Envoyer</button>
+               </form>
+     <br/>
+    </div>
+        
+</section>
+    
 {%endblock%}
