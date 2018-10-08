@@ -21,7 +21,7 @@
                  {{ami.description}}
              </p>
              {%for type in ami.types %}
-                 <a href='/{{myUserUserName}}/types/{{type.name}}'><span style='background-color:{{type.color}}' class='badge badge-primary'>{{type.name}}</span></a>
+                 <a href='/{{myUserUserName}}/types/{{type.name}}'><span style='background-color:{{type.color}}' class='badge badge-primary'>{{type.name}}</span><img style = "height:15px;width:15px;" src='{{type.picture}}' alt="(Emoji d'ami(e) de type {{type.name}})"/></a>
              {% endfor %}
     </div>
   </div>
