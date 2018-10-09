@@ -12,7 +12,7 @@ var uploads = multer({
     dest:__dirname+'/uploads'
 });
 var myConnection=["mongodb://localhost:27017/amitie","mongodb://MikeLogovi:MUGIWARA20$@ds125453.mlab.com:25453/heroku_vr7nz236"];
-mongoose.connect(myConnection[0],{useNewUrlParser:true});
+mongoose.connect(myConnection[1],{useNewUrlParser:true});
 var app = express();
 app.set('port',(process.env.PORT||5000));
 app.use('/bootstrap/css',express.static(__dirname+'/node_modules/bootstrap/dist/css'));
