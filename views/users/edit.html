@@ -55,4 +55,30 @@
             <br/>
       </div>
  </section>
+<script src="/axios/axios.min.js" type ="text/javascript" >
+</script>
+<script>
+     var CLOUDINARY_URL = "https://api.cloudinary.com/V1_1/dwfm2bsym/upload";
+      var CLOUDINARY_UPLOAD_PRESET="cmc3krhg";
+      var fileUpload = document.getElementById('file');
+      fileUpload.addEventListener('change',function(event){
+          var file = event.target.files[0];
+          var formData = new FormData();
+          formData.append('file',file);
+          formData.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);
+          axios({
+              url:CLOUDINARY_URL,
+              method:"POST",
+              header:{
+                  'Content-Type':'application/x-www-form-urlencoded'
+              },
+              crossDomain:true,
+              data:formData
+          }).then(function(res){
+             console.log
+          }).catch(function(err){
+              console.error(err)
+          });
+      });
+</script>
 {% endblock%}

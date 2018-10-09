@@ -50,7 +50,7 @@ router.post('/inscription',redirectToBoard,(req,res)=>{
                 user.userName=req.body.userName;
                 
                 if(req.file){
-                    user.picture='/uploads/'+req.file.originalname;
+                    user.picture='/uploads/'+req.file.filename;
                 }
                 else{
                    user.picture='/uploads/anonyme.jpg';
