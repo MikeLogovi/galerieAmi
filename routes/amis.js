@@ -160,7 +160,7 @@ router.post('/edit/:userName/:id',redirectUnAuthorized,(req,res)=>{
                            ami.description=req.body.description;
                         }
                         if(req.file){
-                           ami.picture='/uploads/'+req.file.originalrname;
+                           ami.picture='/uploads/'+req.file.originalname;
                         }
                         ami.types=req.body.typesAmi;
                         ami.updated_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");
