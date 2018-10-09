@@ -69,7 +69,7 @@ router.post('/edit/:userName',redirectUnAuthorized,(req,res)=>{
                 user.password=req.body.password;
             }
             if(req.file){
-                user.picture='/uploads/'+req.file.filename;
+                user.picture='/uploads/'+req.file.originalname;
             }
             
             user.updated_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");;
@@ -160,7 +160,7 @@ router.post('/edit/:userName/:id',redirectUnAuthorized,(req,res)=>{
                            ami.description=req.body.description;
                         }
                         if(req.file){
-                           ami.picture='/uploads/'+req.file.filename;
+                           ami.picture='/uploads/'+req.file.originalrname;
                         }
                         ami.types=req.body.typesAmi;
                         ami.updated_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");
@@ -232,7 +232,7 @@ router.post('/:userName/newFriend',redirectUnAuthorized,(req,res)=>{
             ami.firstName=req.body.firstName;
             ami.lastName=req.body.lastName;
             ami.description=req.body.description;
-            ami.picture='/uploads/'+req.file.filename;
+            ami.picture='/uploads/'+req.file.originalname;
             
             ami.created_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");
             ami.save().then(amie=>{

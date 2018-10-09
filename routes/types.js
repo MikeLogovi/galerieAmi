@@ -63,7 +63,7 @@ router.post('/:myUserUserName/types/newType',redirectThem,(req,res)=>{
                     type.name=req.body.name;
                     type.description=req.body.description;
                     type.color=req.body.color;
-                    type.picture='/uploads/'+req.file.filename;
+                    type.picture='/uploads/'+req.file.originalname;
                     type.created_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");;
                     type.save().then(type=>{
                         res.redirect('/'+req.session.myUser.userName+'/types');
@@ -221,7 +221,7 @@ router.post('/:myUserUserName/types/:name/edit',redirectThem,(req,res)=>{
                             type.color=req.body.color;
                         }
                         if(req.file){
-                            type.picture='/uploads/'+req.file.filename;
+                            type.picture='/uploads/'+req.file.originalname;
                         }
                         type.updated_at=dateFormat(new Date(),"yyyy-mm-dd HH:MM:ss");
                         type.save(types=>{
